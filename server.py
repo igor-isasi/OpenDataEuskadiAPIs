@@ -1,45 +1,29 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
+
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-  return render_template('index.html')
+    if request.method == 'POST':
+        data = request.form
+        generarMapa(data.get('filtro1'), data.get('filtro2'))
+    return render_template('index.html')
 
-@app.route('/my-link/')
-def my_link():
-  import json
-  import requests
-  import gmaps
+@app.route('/mapa.html/')
+def mapa_html():
+    return render_template('mapa.html')
 
-  # función para imprimir json más entendibles mediante la json.dumps()
-  def jprint(rJson):
-      print(json.dumps(rJson, indent=4))
+def generarMapa(filtro1, filtro2):
+    import folium
 
-  # definición de los campos de la solicitud a la API REST
-  qUrl = "https://api.euskadi.eus/udalmap/groups"
-  qParams = {'lang': 'SPANISH', 'summarized': 'false'}
-  qHeaders = {'accept': 'application/json'}
+    m = folium.Map(location=[43.276803, -2.950852], tiles="cartodb positron")
+    if filtro1 == "checked":
+        folium.Marker(location=[43.276803, -2.950852], popup = 'Sakarya').add_to(m)
+    if filtro2 == "checked":
+        folium.CircleMarker(location=(43.276803, -2.950852),radius=100, fill_color='blue').add_to(m)
 
-  # solictud a la API REST
-  response = requests.get(url=qUrl, params=qParams, headers=qHeaders)
-
-
-  # se comprueba que la respuesta de la API es exitosa
-  # si el código de respuesta está entre 200 y 400 devuelve true, si no false
-  if response.ok:
-      rJson = response.json()
-
-      """ jPrint(rJson) """
-      
-      # guardar el json en un fichero
-      """ with open("data_file.json", "w") as write_file:
-          json.dump(response.json(), write_file) """
-      
-      """ jprint(rJson[0]['subgroups'][0]['indicators'][0]) """
-      return requests.get(url=rJson[0]['subgroups'][0]['indicators'][0]['_links']['self']['href']).json()
-  else:
-      return str(response.status_code) + " " + str(response.reason)
-
+    m.save("templates/mapa.html")
 
 if __name__ == '__main__':
-  app.run(debug=True)
+    generarMapa("unchecked", "unchecked")
+    app.run(host='0.0.0.0', debug=True)
