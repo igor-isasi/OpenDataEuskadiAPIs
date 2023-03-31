@@ -1,15 +1,48 @@
 <!doctype html>
 
+<html>
+	<head>
+		<title>Test</title> 
+		<meta charset=utf-8>
+		<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
+   			integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
+   			crossorigin="">
+		</script>
+        	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript">
+                        function revisarFiltros() {
+                                var filtro1 = "unchecked";
+                                var filtro2 = "unchecked";
+                                if (document.getElementById('filtro1').checked) {
+                                        filtro1 = "checked";
+                                }
+                                if (document.getElementById('filtro2').checked) {
+                                        filtro2 = "checked";
+                                }
+                                $.post("/", {"filtro1": filtro1, "filtro2": filtro2});
+				setTimeout(() => {
+					$("#includedContent").load("mapa.html/");
+				}, 100);
+                        }
+                </script>
+		<script>
+            		$(function(){
+                		$("#includedContent").load("mapa.html/");
+            		});
+        	</script>
+	</head>
 
-<head><title>Test</title> 
-    <meta charset=utf-8> </head>
-    <body>
-        <h1>My Website</h1>
-        <form action="/my-link/">
-            <input type="submit" value="Click me" />
-        </form>
-        
-        <button> <a href="/my-link/">Click me</a></button>
-        <img src="mapa.jpg">
+    	<style>
+        	.divMap {
+          		height: 100%;
+          		width: 100%;
+        	}
+    	</style>
 
-    </body>
+    	<body>
+		<input type="checkbox" id="filtro1" value="filtro1" placeholder="filtro1" onclick="revisarFiltros()">filtro1
+	 	<input type="checkbox" id="filtro2" value="filtro2" onclick="revisarFiltros()">filtro2
+		<div class="divMap" id="includedContent"></div>
+
+	</body>
+</html>
