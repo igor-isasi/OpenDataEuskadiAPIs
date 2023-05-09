@@ -1,0 +1,155 @@
+<!doctype html>
+
+<html>
+	<head>	
+		<title>ODE mapa</title> 
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='loading.css') }}">
+		<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js" integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg==" crossorigin="">
+		</script>
+        	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+		<script type="text/javascript">
+                        function revisarFiltros() {
+				var filtros = {};
+				var añosInd = {};
+				for (var indIn = 1; indIn <= 4; indIn++) {
+					filtros['filtroInd' + indIn.toString()] = document.getElementById('filtroInd' + indIn.toString()).checked;
+					añosInd['filtroInd' + indIn.toString()] = document.getElementById('añoFiltroInd' + indIn.toString()).value;
+					document.getElementById('filtroInd' + indIn.toString()).disabled = true;
+					document.getElementById('añoFiltroInd' + indIn.toString()).disabled = true;
+				}
+				for (var indEv = 1; indEv <= 15; indEv++) {
+					filtros['filtroEv' + indEv.toString()] = document.getElementById('filtroEv' + indEv.toString()).checked;
+					document.getElementById('filtroEv' + indEv.toString()).disabled = true;
+				}
+				document.getElementById("mapa").style.visibility = "hidden";
+				$("#loadingDiv").show();
+				document.getElementById('generarMapa').disabled = true;
+
+				var request = new XMLHttpRequest();
+				request.open('POST', '/');
+
+				request.onload = function() {
+  					if (request.status == 200 && request.responseText == 'mapa cargado') {
+						$("#mapa").load("mapa.html/", function() {
+							for (var indIn = 1; indIn <= 4; indIn++) {
+								document.getElementById('filtroInd' + indIn.toString()).disabled = false;
+								document.getElementById('añoFiltroInd' + indIn.toString()).disabled = false;
+							}
+							for (var indEv = 1; indEv <= 15; indEv++) {
+								document.getElementById('filtroEv' + indEv.toString()).disabled = false;
+							}
+                                                        $("#loadingDiv").hide();
+							document.getElementById("filtros").style.visibility = "visible";
+							document.getElementById("mapa").style.visibility = "visible";
+							document.getElementById("generarMapa").disabled = false;
+						});
+  					} else {
+    						alert('Something went wrong.');
+  					}
+				};
+
+				request.onerror = function() {
+  					alert('Ha ocurrido un error al cargar el mapa');
+				};
+
+				request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				request.send("filtros=" + JSON.stringify(filtros) + "&añosInd=" + JSON.stringify(añosInd));
+                        }
+			function reiniciarFiltros() {
+				for (var indIn = 1; indIn <= 4; indIn++) {
+                                        document.getElementById('filtroInd' + indIn.toString()).checked = false;
+                                }
+                                for (var indEv = 1; indEv <= 15; indEv++) {
+                                        document.getElementById('filtroEv' + indEv.toString()).checked = false;
+                                }
+			}
+		</script>
+ 	</head>
+	<body>
+		<div class="filtrosDiv" id="filtros">
+			<form action="javascript:;" onsubmit="revisarFiltros(this)">
+				<label class="tipoFiltro">INDICADORES</label><br>
+				<label><input type="checkbox" id="filtroInd1" value="filtroInd1"> Tasa de ocupación de la población de 16 y mas años (%)</label>
+				<select class="añoFiltro" name="añoFiltroInd1" id="añoFiltroInd1">
+					<option value=2021>2021</option>
+					<option value=2020>2020</option>
+					<option value=2019>2019</option>
+				</select><br>
+				<label><input type="checkbox" id="filtroInd2" value="filtroInd2"> Tasa de actividad (%)</label>
+                                <select class="añoFiltro" name="añoFiltroInd2" id="añoFiltroInd2">
+                                        <option value=2021>2021</option>
+                                        <option value=2020>2020</option>
+                                        <option value=2019>2019</option>
+				</select><br>
+				<label><input type="checkbox" id="filtroInd3" value="filtroInd3"> Índice de sobreenvejecimiento: Población de 75 y más años (%)</label>
+                                <select class="añoFiltro" name="añoFiltroInd3" id="añoFiltroInd3">
+                                        <option value=2021>2021</option>
+                                        <option value=2020>2020</option>
+                                        <option value=2019>2019</option>
+				</select><br>
+				<label><input type="checkbox" id="filtroInd4" value="filtroInd4"> Consumo eléctrico anual no industrial (Kwh./habitante)</label>
+                                <select class="añoFiltro" name="añoFiltroInd4" id="añoFiltroInd4">
+                                        <option value=2021>2021</option>
+                                        <option value=2020>2020</option>
+                                        <option value=2019>2019</option>
+				</select><br>
+				<br>
+				<label class="tipoFiltro">EVENTOS PRÓXIMOS</label><br>
+				<label><input type="checkbox" id="filtroEv1" value="filtroEv1"> Todos</label>
+				<label><input type="checkbox" id="filtroEv2" value="filtroEv2"> Conciertos</label>
+				<label><input type="checkbox" id="filtroEv3" value="filtroEv3"> Teatro</label>
+				<label><input type="checkbox" id="filtroEv4" value="filtroEv4"> Danza</label>
+				<label><input type="checkbox" id="filtroEv5" value="filtroEv5"> Conferencias</label>
+				<label><input type="checkbox" id="filtroEv6" value="filtroEv6"> Bertsolaritza</label>
+				<label><input type="checkbox" id="filtroEv7" value="filtroEv7"> Ferias</label>
+				<label><input type="checkbox" id="filtroEv8" value="filtroEv8"> Exposiciones</label>
+				<label><input type="checkbox" id="filtroEv9" value="filtroEv9"> Proyecciones audiovisuales</label>
+				<label><input type="checkbox" id="filtroEv10" value="filtroEv10"> Formaciones</label>
+				<label><input type="checkbox" id="filtroEv11" value="filtroEv11"> Concursos</label>
+				<label><input type="checkbox" id="filtroEv12" value="filtroEv12"> Festivales</label>
+				<label><input type="checkbox" id="filtroEv13" value="filtroEv13"> Actividades infantiles</label>
+				<label><input type="checkbox" id="filtroEv14" value="filtroEv14"> Fiestas</label>
+				<label><input type="checkbox" id="filtroEv15" value="filtroEv15"> Otros</label>
+				<br><br>
+				<input type="submit" id="generarMapa" value="Generar mapa">
+			</form>
+		</div>
+
+		<div class="windows8" id="loadingDiv">
+			<div class="wBall" id="wBall_1">
+				<div class="wInnerBall"></div>
+			</div>	
+			<div class="wBall" id="wBall_2">
+				<div class="wInnerBall"></div>
+			</div>
+			<div class="wBall" id="wBall_3">
+				<div class="wInnerBall"></div>
+			</div>
+			<div class="wBall" id="wBall_4">
+				<div class="wInnerBall"></div>
+			</div>
+			<div class="wBall" id="wBall_5">
+				<div class="wInnerBall"></div>
+			</div>
+		</div>
+
+		<div class="mapDiv" id="mapa"></div>
+		<script>
+			const pageAccessedByReload = (
+  				(window.performance.navigation && window.performance.navigation.type === 1) ||
+    				window.performance
+      				.getEntriesByType('navigation')
+      				.map((nav) => nav.type)
+      				.includes('reload')
+			);
+
+			document.getElementById("filtros").style.visibility = "hidden";
+			if (pageAccessedByReload == true) {
+				reiniciarFiltros();
+			}
+			revisarFiltros();
+		</script>
+	</body>
+</html>

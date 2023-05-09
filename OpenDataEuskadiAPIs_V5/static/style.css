@@ -1,0 +1,43 @@
+body {
+	display: inline-block; 
+}
+
+select {
+	font-size: 12px;
+}
+
+.añoFiltro {
+	font-size: 13px;
+}
+
+.filtrosDiv {
+	position: absolute;
+	margin: 10px;
+	border: 2px solid black;
+	float: left;
+	width: 22%;
+	height: 97%;
+	padding: 5px;
+	margin-left: 5px;
+	background-color: cornflowerblue;
+	overflow: auto;
+}
+
+.tipoFiltro {
+	font-size: 13px;
+	border: 1px solid grey;
+	padding: 2px;
+}
+
+.filtrosDiv label {
+        font-size: 11px;
+}
+
+.mapDiv {
+	height: 97%;
+	width: 75%;
+	float: right;
+	margin: 10px;
+	border: 1px solid black;
+	overflow: auto;
+}
