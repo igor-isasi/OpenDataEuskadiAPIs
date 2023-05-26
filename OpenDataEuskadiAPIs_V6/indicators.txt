@@ -1,0 +1,10 @@
+{
+	"10": "Tasa de ocupación de la población de 16 y mas años (%)",
+	"8": "Tasa de actividad (%)",
+        "44": "Índice de sobreenvejecimiento: Población de 75 y más años (%)",
+	"42": "Índice de infancia: Población de 0-14 años (%)",
+        "160": "Consumo eléctrico anual no industrial (Kwh./habitante)",
+	"45": "Índice de dependencia demográfica (%)",
+	"86": "Solicitudes de vivienda que constan en Etxebide (% habitantes)",
+	"48": "Población extranjera de fuera de la UE-15 (% población extranjera)"
+}
